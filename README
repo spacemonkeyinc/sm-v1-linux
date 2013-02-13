@@ -1,0 +1,28 @@
+Making changes
+--------------
+
+1. make the change and test and stuff
+2. add an entry to the changelog (dch -i -c kernel-debian/changelog)
+3. the new version number should probably reflect the version of the kernel
+   being used, in case it changes
+4. if you change the package revision (KERNEL_SM_REV in Makefile), that will
+   change the names of the generated packages
+5. for plain packaging changes, just increment the debian revision (the part
+   after the - in the package version, found at the top line of
+   kernel-debian/changelog)
+6. to upload to the space monkey apt repo, in unstable:
+
+
+ SPACE_LEVEL=unstable upload-new-debs path/to/spacemonkey-base-image*.changes \
+     apt.spacemonkey.com
+
+
+Using
+-----
+
+just "make" should do everything you need, downloading kernel source if
+necessary, comparing it against a known hash, extracting and patching it,
+putting the debian packaging files in place, and building.
+
+you'll get the kernel package itself (which includes the few modules we build),
+a headers package, and a snapshot of the source tree used as the source debs.

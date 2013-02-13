@@ -1,0 +1,31 @@
+Source: spacemonkey-base-image
+Section: contrib/kernel
+Priority: required
+Maintainer: Tom Stokes <tom@spacemonkey.com>
+Build-Depends: debhelper (>> 8), cpio:native, lzma:native, patchutils,
+  u-boot-tools:native, uboot-envtools, mtd-utils:native,
+  libncurses5-dev:native, bison, flex:native, gettext:native, texinfo, wget,
+  multistrap
+Vcs-Git: ssh://gerrit.spacemonkey.com:29418/builder
+Standards-Version: 3.9.2
+
+Package: spacemonkey-kernel-#PKGVER#
+Architecture: armel
+Provides: linux-image, linux-uimage, spacemonkey-kernel,
+  spacemonkey-kernel-#SHORTVER#
+Conflicts: linux-uimage
+Depends: kmod | module-init-tools
+XB-Spacemonkey-Repo: devices
+Description: Linux kernel for Space Monkey devices
+ The Linux kernel version #PKGVER#, with appropriate patches, for use on Space
+ Monkey devices.
+
+Package: spacemonkey-kernel-headers-#PKGVER#
+Architecture: armel
+Provides: linux-headers, spacemonkey-kernel-headers,
+  spacemonkey-kernel-headers-#SHORTVER#
+Description: Linux header files for Space Monkey devices
+ This package provides the kernel header files corresponding to the
+ Spacemonkey Linux kernel in the package spacemonkey-kernel-#PKGVER#,
+ generally used for building out-of-tree kernel modules. These files
+ will be installed into /usr/src/sm-linux-headers-#PKGVER#.

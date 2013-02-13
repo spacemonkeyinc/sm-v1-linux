@@ -1,0 +1,34 @@
+#!/usr/bin/make -f
+
+PKGVER := #PKGVER#
+
+kernel_destdir := $(CURDIR)/debian/spacemonkey-kernel-$(PKGVER)
+headers_destdir := $(CURDIR)/debian/spacemonkey-kernel-headers-$(PKGVER)
+headers_path := /usr/src/sm-linux-headers-$(PKGVER)
+
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	@echo "Compiling kernel"
+	$(MAKE) MAKEFLAGS="-j3 --no-print-directory" uImage \
+	    CROSS_COMPILE=$(CROSS_COMPILE) ARCH=$(ARCH)
+	@echo "Compiling kernel modules"
+	$(MAKE) MAKEFLAGS="-j3 --no-print-directory" modules \
+	    CROSS_COMPILE=$(CROSS_COMPILE) ARCH=$(ARCH)
+
+override_dh_auto_install:
+	@echo "Installing kernel..."
+	install -D -o0 -g0 -m644 arch/arm/boot/uImage \
+	    "$(kernel_destdir)/boot/uImage"
+	@echo "Installing kernel modules..."
+	$(MAKE) INSTALL_MOD_PATH="$(kernel_destdir)" modules_install \
+	    CROSS_COMPILE=$(CROSS_COMPILE) ARCH=$(ARCH)
+	@echo "Installing kernel headers..."
+	$(MAKE) INSTALL_HDR_PATH="$(headers_destdir)$(headers_path)" \
+	    headers_install CROSS_COMPILE=$(CROSS_COMPILE) ARCH=$(ARCH)
+	@echo "Kernel installed into package."
+
+override_dh_auto_clean:
+	$(MAKE) clean

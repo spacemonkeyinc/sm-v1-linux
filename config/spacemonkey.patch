@@ -1,0 +1,161 @@
+diff -urN linux-3.1.10/arch/arm/mach-kirkwood/Kconfig linux-3.1.10-spacemonkey/arch/arm/mach-kirkwood/Kconfig
+--- linux-3.1.10/arch/arm/mach-kirkwood/Kconfig	2012-09-11 17:41:54.000000000 -0600
++++ linux-3.1.10-spacemonkey/arch/arm/mach-kirkwood/Kconfig	2012-09-11 17:30:49.000000000 -0600
+@@ -166,6 +166,12 @@
+ 	  Say 'Y' here if you want your kernel to support the
+ 	  HP t5325 Thin Client.
+ 
++config MACH_SPACEMONKEY
++	bool "Space Monkey"
++	help
++	  Say 'Y' here if you want your kernel to support the
++	  Space Monkey
++
+ endmenu
+ 
+ endif
+diff -urN linux-3.1.10/arch/arm/mach-kirkwood/Makefile linux-3.1.10-spacemonkey/arch/arm/mach-kirkwood/Makefile
+--- linux-3.1.10/arch/arm/mach-kirkwood/Makefile	2012-09-11 17:41:54.000000000 -0600
++++ linux-3.1.10-spacemonkey/arch/arm/mach-kirkwood/Makefile	2012-09-11 17:30:49.000000000 -0600
+@@ -24,5 +24,6 @@
+ obj-$(CONFIG_MACH_NET2BIG_V2)		+= netxbig_v2-setup.o lacie_v2-common.o
+ obj-$(CONFIG_MACH_NET5BIG_V2)		+= netxbig_v2-setup.o lacie_v2-common.o
+ obj-$(CONFIG_MACH_T5325)		+= t5325-setup.o
++obj-$(CONFIG_MACH_SPACEMONKEY)		+= spacemonkey-setup.o
+ 
+ obj-$(CONFIG_CPU_IDLE)			+= cpuidle.o
+diff -urN linux-3.1.10/arch/arm/mach-kirkwood/spacemonkey-setup.c linux-3.1.10-spacemonkey/arch/arm/mach-kirkwood/spacemonkey-setup.c
+--- linux-3.1.10/arch/arm/mach-kirkwood/spacemonkey-setup.c	1969-12-31 17:00:00.000000000 -0700
++++ linux-3.1.10-spacemonkey/arch/arm/mach-kirkwood/spacemonkey-setup.c	2012-09-11 17:30:49.000000000 -0600
+@@ -0,0 +1,123 @@
++/*
++ * arch/arm/mach-kirkwood/spacemonkey-setup.c
++ *
++ * Space Monkey Setup
++ *
++ * This file is licensed under the terms of the GNU General Public
++ * License version 2.  This program is licensed "as is" without any
++ * warranty of any kind, whether express or implied.
++ */
++
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/platform_device.h>
++#include <linux/ata_platform.h>
++#include <linux/mtd/partitions.h>
++#include <linux/mv643xx_eth.h>
++#include <linux/gpio.h>
++#include <linux/leds.h>
++#include <asm/mach-types.h>
++#include <asm/mach/arch.h>
++#include <mach/kirkwood.h>
++#include "common.h"
++#include "mpp.h"
++
++static struct mtd_partition spacemonkey_nand_parts[] = {
++	{
++		.name = "u-boot",
++		.offset = 0,
++		.size = SZ_1M
++	}, {
++		.name = "uImage",
++		.offset = MTDPART_OFS_NXTBLK,
++		.size = SZ_1M + SZ_2M
++	}, {
++		.name = "updater",
++		.offset = MTDPART_OFS_NXTBLK,
++		.size = SZ_1M + SZ_2M
++	}, {
++		.name = "root",
++		.offset = MTDPART_OFS_NXTBLK,
++		.size = MTDPART_SIZ_FULL
++	},
++};
++
++static struct mv643xx_eth_platform_data spacemonkey_ge00_data = {
++	.phy_addr	= MV643XX_ETH_PHY_ADDR(0),
++};
++
++static struct mv_sata_platform_data spacemonkey_sata_data = {
++	.n_ports	= 1,
++};
++
++static struct gpio_led spacemonkey_led_pins[] = {
++	{
++		.name			= "status:green:health",
++		.default_trigger	= "none",
++		.gpio			= 28,
++		.active_low		= 1,
++	},
++	{
++		.name			= "status:orange:fault",
++		.default_trigger	= "none",
++		.gpio			= 23,
++		.active_low		= 1,
++	},
++	{
++		.name			= "status:blue:misc",
++		.default_trigger	= "default-on",
++		.gpio			= 21,
++		.active_low		= 1,
++	}
++};
++
++static struct gpio_led_platform_data spacemonkey_led_data = {
++	.leds		= spacemonkey_led_pins,
++	.num_leds	= ARRAY_SIZE(spacemonkey_led_pins),
++};
++
++static struct platform_device spacemonkey_leds = {
++	.name	= "leds-gpio",
++	.id	= -1,
++	.dev	= {
++		.platform_data	= &spacemonkey_led_data,
++	}
++};
++
++static unsigned int spacemonkey_mpp_config[] __initdata = {
++	MPP28_GPIO,	/* LED Green */
++	MPP23_GPIO,	/* LED Orange */
++	MPP21_GPIO,	/* LED Blue */
++	0
++};
++
++static void __init spacemonkey_init(void)
++{
++	/*
++	 * Basic setup. Needs to be called early.
++	 */
++	kirkwood_init();
++
++	/* setup gpio pin select */
++	kirkwood_mpp_conf(spacemonkey_mpp_config);
++
++	kirkwood_uart0_init();
++	kirkwood_nand_init(ARRAY_AND_SIZE(spacemonkey_nand_parts), 40);
++
++	kirkwood_ehci_init();
++	kirkwood_ge00_init(&spacemonkey_ge00_data);
++	kirkwood_sata_init(&spacemonkey_sata_data);
++
++	platform_device_register(&spacemonkey_leds);
++}
++
++MACHINE_START(SPACEMONKEY, "Space Monkey")
++	/* Maintainer: Tom Stokes <tom@spacemonkey.com> */
++	.boot_params	= 0x00000100,
++	.init_machine	= spacemonkey_init,
++	.map_io		= kirkwood_map_io,
++	.init_early	= kirkwood_init_early,
++	.init_irq	= kirkwood_init_irq,
++	.timer		= &kirkwood_timer,
++MACHINE_END
++
+diff -urN linux-3.1.10/arch/arm/tools/mach-types linux-3.1.10-spacemonkey/arch/arm/tools/mach-types
+--- linux-3.1.10/arch/arm/tools/mach-types	2012-01-18 08:33:18.000000000 -0700
++++ linux-3.1.10-spacemonkey/arch/arm/tools/mach-types	2012-09-11 17:48:28.000000000 -0600
+@@ -1113,3 +1113,4 @@
+ thales_adc		MACH_THALES_ADC		THALES_ADC		3492
+ ubisys_p9d_evp		MACH_UBISYS_P9D_EVP	UBISYS_P9D_EVP		3493
+ atdgp318		MACH_ATDGP318		ATDGP318		3494
++spacemonkey		MACH_SPACEMONKEY	SPACEMONKEY		4341

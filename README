@@ -10,11 +10,9 @@ Making changes
 5. for plain packaging changes, just increment the debian revision (the part
    after the - in the package version, found at the top line of
    kernel-debian/changelog)
-6. to upload to the space monkey apt repo, in unstable:
-
-
- SPACE_LEVEL=unstable upload-new-debs path/to/spacemonkey-base-image*.changes \
-     apt.spacemonkey.com
+6. since this package is not debs-in-spaaace-compatible, the procedure for
+   tagging and uploading is somewhat different. "make upload_packages" should
+   take care of it for you.
 
 
 Using

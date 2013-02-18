@@ -107,6 +107,20 @@ $(DEB_CHANGESFILE) $(DEB_KERNELPKG): kernel-source-stamp $(DEB_PACKAGING_FILES)
 PHONY += kernel
 kernel: $(DEB_CHANGESFILE)
 
+BUILD_TAG_NAME=debian/spacemonkey-base-image/$(DEB_VERSION)
+
+PHONY += upload_packages
+upload_packages: $(DEB_CHANGESFILE)
+	@echo "Checking for uncommitted changes..."
+	[ -z "$$(git status --porcelain -uno)" ]
+	@echo "Tagging build..."
+	git tag $(BUILD_TAG_NAME)
+	@echo "Uploading built packages to apt server..."
+	SPACE_LEVEL=unstable upload-new-debs $(DEB_CHANGESFILE) \
+	    apt.spacemonkey.com $(shell git config spacemonkey.user)
+	@echo "Pushing tag to git server..."
+	git push origin refs/tags/$(BUILD_TAG_NAME)
+
 PHONY += usage
 usage:
 	@echo "Usage: make [target]"
@@ -117,5 +131,6 @@ usage:
 	@echo "  download_kernel -- download and verify kernel source"
 	@echo "  unpack_kernel   -- download, unpack, patch kernel source"
 	@echo "  debs            -- build and create kernel/headers debs"
+	@echo "  upload_packages -- tag build in git and upload packages to apt"
 
 .PHONY: $(PHONY)

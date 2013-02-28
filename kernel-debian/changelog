@@ -1,3 +1,9 @@
+spacemonkey-base-image (3.1.10.spacemonkey-2) UNRELEASED; urgency=low
+
+  * Enabled config options for full disk encryption
+
+ -- Tom Stokes <tom@spacemonkey.com>  Wed, 27 Feb 2013 17:00:52 -0700
+
 spacemonkey-base-image (3.1.10.spacemonkey-1) unstable; urgency=low
 
   * Packaged kernel

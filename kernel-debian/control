@@ -5,7 +5,7 @@ Maintainer: Tom Stokes <tom@spacemonkey.com>
 Build-Depends: debhelper (>> 8), cpio:native, lzma:native, patchutils,
   u-boot-tools:native, uboot-envtools, mtd-utils:native,
   libncurses5-dev:native, bison, flex:native, gettext:native, texinfo, wget,
-  multistrap
+  multistrap, dpkg-dev (>= 1.16.1)
 Vcs-Git: ssh://gerrit.spacemonkey.com:29418/builder
 Standards-Version: 3.9.2
 
@@ -29,3 +29,11 @@ Description: Linux header files for Space Monkey devices
  Spacemonkey Linux kernel in the package spacemonkey-kernel-#PKGVER#,
  generally used for building out-of-tree kernel modules. These files
  will be installed into /usr/src/sm-linux-headers-#PKGVER#.
+
+Package: spacemonkey-kernel-#PKGVER#-dbg
+Architecture: armel
+Provides: linux-image-dbg, spacemonkey-kernel-dbg
+Recommends: spacemonkey-kernel-#PKGVER# (= ${binary:Version})
+Description: Linux kernel debug symbols for Space Monkey devices
+ This package includes the debugging symbols for the corresponding
+ kernel package.

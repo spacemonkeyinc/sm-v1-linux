@@ -3,9 +3,17 @@
 PKGVER := #PKGVER#
 
 kernel_destdir := $(CURDIR)/debian/spacemonkey-kernel-$(PKGVER)
+debug_destdir := $(CURDIR)/debian/spacemonkey-kernel-$(PKGVER)-dbg/usr/lib/debug
 headers_destdir := $(CURDIR)/debian/spacemonkey-kernel-headers-$(PKGVER)
 headers_path := /usr/src/sm-linux-headers-$(PKGVER)
 
+include /usr/share/dpkg/architecture.mk
+
+ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
+cross_tool=$(DEB_HOST_GNU_TYPE)-
+else
+cross_tool=
+endif
 
 %:
 	dh $@
@@ -22,6 +30,7 @@ override_dh_auto_install:
 	@echo "Installing kernel..."
 	install -D -o0 -g0 -m644 arch/arm/boot/uImage \
 	    "$(kernel_destdir)/boot/uImage"
+	install -D -o0 -g0 -m644 vmlinux "$(kernel_destdir)/boot/vmlinux"
 	@echo "Installing kernel modules..."
 	$(MAKE) INSTALL_MOD_PATH="$(kernel_destdir)" modules_install \
 	    CROSS_COMPILE=$(CROSS_COMPILE) ARCH=$(ARCH)
@@ -32,3 +41,20 @@ override_dh_auto_install:
 
 override_dh_auto_clean:
 	$(MAKE) clean
+
+override_dh_strip:
+	dh_strip --dbg-package=spacemonkey-kernel-$(PKGVER)-dbg
+	# dh_strip apparently can't be made to recognize and strip .ko modules
+	# or vmlinux; do them manually
+	find $(kernel_destdir) \( -name vmlinux -o -name '*.ko' \) \
+	        -printf '%P\n' | \
+	while read f; do \
+	    install -d "$(debug_destdir)/$$(dirname $$f)"; \
+	    $(cross_tool)objcopy --only-keep-debug "$(kernel_destdir)/$$f" \
+	            "$(debug_destdir)/$$f"; \
+	    chmod 644 "$(debug_destdir)/$$f"; \
+	    $(cross_tool)strip --remove-section=.comment --remove-section=.note \
+	            "$(kernel_destdir)/$$f"; \
+	    $(cross_tool)objcopy --add-gnu-debuglink "$(debug_destdir)/$$f" \
+	            "$(kernel_destdir)/$$f"; \
+	done

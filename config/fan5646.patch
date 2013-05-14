@@ -18,14 +18,15 @@ diff -rcNP linux-3.1.10-backup/arch/arm/mach-kirkwood/spacemonkey-setup.c linux-
 --- 63,68 ----
 ***************
 *** 84,89 ****
---- 78,102 ----
+--- 78,103 ----
   	}
   };
   
 + static struct gpio_led spacemonkey_fan5646_led = {
-+ 	.name	= "status:blue:misc",
-+ 	.gpio	= 21,
-+ 	.default_state	= LEDS_GPIO_DEFSTATE_ON,
++ 	.name				= "status:blue:misc",
++ 	.gpio				= 21,
++ 	.default_state			= LEDS_GPIO_DEFSTATE_ON,
++ 	.default_trigger		= "default-on",
 + };
 +
 + static struct gpio_led_platform_data spacemonkey_fan5646_platform_data = {

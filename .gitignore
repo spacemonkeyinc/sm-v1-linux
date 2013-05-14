@@ -2,3 +2,8 @@
 kernel-source-stamp
 kernel-verified-stamp
 /linux-*.tar.bz2
+/spacemonkey-base-image_*.dsc
+/spacemonkey-base-image_*.tar.gz
+/spacemonkey-base-image_*.changes
+/spacemonkey-kernel-*.deb
+

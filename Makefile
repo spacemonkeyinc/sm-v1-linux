@@ -61,7 +61,7 @@ clean:
 PHONY += cleanall
 cleanall:
 	@echo "Erasing kernel source directory, downloads, and stamps"
-	$(RM) $(KERNEL_DIR)
+	$(RM) -r $(KERNEL_DIR)
 	$(RM) $(KERNEL_TARBALL)
 	$(RM) $(STAMPS)
 

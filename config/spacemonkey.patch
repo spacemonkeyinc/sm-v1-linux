@@ -27,7 +27,7 @@ diff -urN linux-3.1.10/arch/arm/mach-kirkwood/Makefile linux-3.1.10-spacemonkey/
 diff -urN linux-3.1.10/arch/arm/mach-kirkwood/spacemonkey-setup.c linux-3.1.10-spacemonkey/arch/arm/mach-kirkwood/spacemonkey-setup.c
 --- linux-3.1.10/arch/arm/mach-kirkwood/spacemonkey-setup.c	1969-12-31 17:00:00.000000000 -0700
 +++ linux-3.1.10-spacemonkey/arch/arm/mach-kirkwood/spacemonkey-setup.c	2012-09-11 17:30:49.000000000 -0600
-@@ -0,0 +1,123 @@
+@@ -0,0 +1,127 @@
 +/*
 + * arch/arm/mach-kirkwood/spacemonkey-setup.c
 + *
@@ -54,21 +54,25 @@ diff -urN linux-3.1.10/arch/arm/mach-kirkwood/spacemonkey-setup.c linux-3.1.10-s
 +
 +static struct mtd_partition spacemonkey_nand_parts[] = {
 +	{
-+		.name = "u-boot",
-+		.offset = 0,
-+		.size = SZ_1M
++		.name	= "u-boot",
++		.offset	= 0,
++		.size	= SZ_1M
 +	}, {
-+		.name = "uImage",
-+		.offset = MTDPART_OFS_NXTBLK,
-+		.size = SZ_1M + SZ_2M
++		.name	= "uImage",
++		.offset	= MTDPART_OFS_NXTBLK,
++		.size	= SZ_4M
 +	}, {
-+		.name = "updater",
-+		.offset = MTDPART_OFS_NXTBLK,
-+		.size = SZ_1M + SZ_2M
++		.name	= "recovery",
++		.offset	= MTDPART_OFS_NXTBLK,
++		.size	= SZ_8M + SZ_2M
 +	}, {
-+		.name = "root",
-+		.offset = MTDPART_OFS_NXTBLK,
-+		.size = MTDPART_SIZ_FULL
++		.name	= "secure",
++		.offset	= MTDPART_OFS_NXTBLK,
++		.size	= SZ_1M
++	}, {
++		.name	= "root",
++		.offset	= MTDPART_OFS_NXTBLK,
++		.size	= MTDPART_SIZ_FULL
 +	},
 +};
 +

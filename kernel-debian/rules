@@ -44,17 +44,26 @@ override_dh_auto_clean:
 
 override_dh_strip:
 	dh_strip --dbg-package=spacemonkey-kernel-$(PKGVER)-dbg
+ifeq (,$(filter nostrip,$(DEB_BUILD_OPTIONS)))
 	# dh_strip apparently can't be made to recognize and strip .ko modules
 	# or vmlinux; do them manually
-	find $(kernel_destdir) \( -name vmlinux -o -name '*.ko' \) \
-	        -printf '%P\n' | \
+	find $(kernel_destdir) -name '*.ko' -printf '%P\n' | \
 	while read f; do \
 	    install -d "$(debug_destdir)/$$(dirname $$f)"; \
 	    $(cross_tool)objcopy --only-keep-debug "$(kernel_destdir)/$$f" \
 	            "$(debug_destdir)/$$f"; \
 	    chmod 644 "$(debug_destdir)/$$f"; \
 	    $(cross_tool)strip --remove-section=.comment --remove-section=.note \
-	            "$(kernel_destdir)/$$f"; \
+	            --strip-debug "$(kernel_destdir)/$$f"; \
 	    $(cross_tool)objcopy --add-gnu-debuglink "$(debug_destdir)/$$f" \
 	            "$(kernel_destdir)/$$f"; \
 	done
+	install -d "$(debug_destdir)/boot"
+	$(cross_tool)objcopy --only-keep-debug "$(kernel_destdir)/boot/vmlinux" \
+	        "$(debug_destdir)/boot/vmlinux"
+	chmod 644 "$(debug_destdir)/boot/vmlinux"
+	$(cross_tool)strip --remove-section=.comment --remove-section=.note \
+	        --strip-unneeded "$(kernel_destdir)/boot/vmlinux"
+	$(cross_tool)objcopy --add-gnu-debuglink "$(debug_destdir)/boot/vmlinux" \
+	        "$(kernel_destdir)/boot/vmlinux"
+endif

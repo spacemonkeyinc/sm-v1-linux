@@ -56,7 +56,7 @@ debs: $(DEB_CHANGESFILE)
 PHONY += clean
 clean:
 	@echo "Cleaning kernel source directory"
-	$(MAKE) -C $(KERNEL_DIR) clean
+	$(MAKE) -C $(KERNEL_DIR) clean CROSS_COMPILE=
 
 PHONY += cleanall
 cleanall:

@@ -1,3 +1,25 @@
+spacemonkey-base-image (3.8.6.spacemonkey-5) UNRELEASED; urgency=low
+
+  * Enabling lots of other routing/shaping/classifying options, to get us
+    some more useful use of queueing and policing disciplines. These are
+    surely not all necessary, but it's hard to tell ahead of time what will
+    end up working best. In particular, we probably don't need both the
+    various classifiers and the overlapping ematch functionality. Added
+    config items: IP_ROUTE_CLASSID, NET_SCH_PRIO, NET_SCH_RED, NET_SCH_SFQ,
+    NET_SCH_TBF, NET_SCH_DSMARK, NET_SCH_NETEM (module), NET_SCH_INGRESS,
+    NET_CLS_TCINDEX, NET_CLS_ROUTE4, NET_CLS_FW, NET_CLS_U32, CLS_U32_MARK,
+    NET_CLS_FLOW, NET_EMATCH, NET_EMATCH_CMP (module), NET_EMATCH_U32
+    (module), NET_EMATCH_META (module), NET_CLS_ACT, NET_ACT_POLICE,
+    NET_ACT_GACT, GACT_PROB, NET_ACT_IPT (module)
+
+ -- paul cannon <paul@spacemonkey.com>  Sun, 02 Jun 2013 15:13:12 -0600
+
+spacemonkey-base-image (3.8.6.spacemonkey-4) UNRELEASED; urgency=low
+
+  * Enable CONFIG_NET_SCH_HTB
+
+ -- paul cannon <paul@spacemonkey.com>  Sun, 02 Jun 2013 15:13:12 -0600
+
 spacemonkey-base-image (3.8.6.spacemonkey-3) UNRELEASED; urgency=low
 
   * Upgrade to Linux Kernel 3.8.6

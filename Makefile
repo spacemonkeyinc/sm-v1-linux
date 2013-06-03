@@ -1,8 +1,8 @@
 # defining the kernel to use
 KERNEL_MAJOR := 3
 KERNEL_MINOR := 8
-KERNEL_PATCH := 5
-KERNEL_HASH  := 1f1b6e09cb6ba656b28a41eb9e16e11576879f14574c0cb861b24734f3c5899f
+KERNEL_PATCH := 6
+KERNEL_HASH  := afa898f3329c1f4aaede6e3dab57f7c522617e1b67f7c1abd73a91253a0cd10c
 
 KERNEL_MIRROR := http://www.kernel.org/pub/
 
@@ -93,7 +93,7 @@ kernel-source-stamp: kernel-verified-stamp
 	cp config/mach-types $(KERNEL_DIR)/arch/arm/tools/
 	mkdir $(KERNEL_DIR)/debian
 	@echo "Installing kernel configuration file"
-	cp config/linux-3.8.5.config "$(KERNEL_DIR)/.config"
+	cp config/linux-3.8.6.config "$(KERNEL_DIR)/.config"
 	touch $@
 
 PHONY += unpack_kernel

@@ -1,3 +1,9 @@
+spacemonkey-base-image (3.8.6.spacemonkey-1) UNRELEASED; urgency=low
+
+  * Upgrade to Linux Kernel 3.8.6
+
+ -- Tom Stokes <tom@spacemonkey.com>  Wed, 10 Apr 2013 11:28:36 -0600
+
 spacemonkey-base-image (3.8.5.spacemonkey-1) unstable; urgency=low
 
   * Upgrade to Linux Kernel 3.8.5

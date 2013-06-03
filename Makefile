@@ -1,14 +1,14 @@
 # defining the kernel to use
 KERNEL_MAJOR := 3
-KERNEL_MINOR := 1
-KERNEL_PATCH := 10
-KERNEL_HASH  := 9f22161de3c6992aa90acab0565460f565708b3a22b24205af3a31cb0f5c97ed
+KERNEL_MINOR := 8
+KERNEL_PATCH := 5
+KERNEL_HASH  := 1f1b6e09cb6ba656b28a41eb9e16e11576879f14574c0cb861b24734f3c5899f
 
 KERNEL_MIRROR := http://www.kernel.org/pub/
 
 KERNEL_SHORTVER := $(KERNEL_MAJOR).$(KERNEL_MINOR)
 KERNEL_VER      := $(KERNEL_SHORTVER).$(KERNEL_PATCH)
-KERNEL_TARBALL  := linux-$(KERNEL_VER).tar.bz2
+KERNEL_TARBALL  := linux-$(KERNEL_VER).tar.xz
 KERNEL_URL_PATH := linux/kernel/v$(KERNEL_SHORTVER:3.%=3.x)/$(KERNEL_TARBALL)
 KERNEL_URL      := $(KERNEL_MIRROR)/$(KERNEL_URL_PATH)
 KERNEL_DIR      := ./linux-$(KERNEL_VER)
@@ -87,14 +87,13 @@ STAMPS += kernel-source-stamp
 kernel-source-stamp: kernel-verified-stamp
 	$(RM) -r $(KERNEL_DIR)
 	@echo "Extracting kernel ..."
-	tar xjf "$(KERNEL_TARBALL)"
+	tar xJf "$(KERNEL_TARBALL)"
 	@echo "Patching kernel"
 	patch -d $(KERNEL_DIR) -p1 < config/archlinuxarm.patch
-	patch -d $(KERNEL_DIR) -p1 < config/spacemonkey.patch
-	patch -d $(KERNEL_DIR) -p1 < config/fan5646.patch
+	cp config/mach-types $(KERNEL_DIR)/arch/arm/tools/
 	mkdir $(KERNEL_DIR)/debian
 	@echo "Installing kernel configuration file"
-	cp config/linux-3.1.10.config "$(KERNEL_DIR)/.config"
+	cp config/linux-3.8.5.config "$(KERNEL_DIR)/.config"
 	touch $@
 
 PHONY += unpack_kernel

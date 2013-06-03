@@ -1,9 +1,9 @@
-/linux-3.1.10
+/linux-3.8.5
 kernel-source-stamp
 kernel-verified-stamp
 /linux-*.tar.bz2
-/spacemonkey-base-image_*.dsc
-/spacemonkey-base-image_*.tar.gz
-/spacemonkey-base-image_*.changes
-/spacemonkey-kernel-*.deb
-
+/linux-*.tar.xz
+/*.deb
+/*.tar.gz
+/*.changes
+/*.dsc

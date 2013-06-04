@@ -1,3 +1,9 @@
+spacemonkey-base-image (3.8.6.spacemonkey-6) UNRELEASED; urgency=low
+
+  * Add spacemonkey hardware support 
+
+ -- Tom Stokes <tom@spacemonkey.com>  Mon, 03 Jun 2013 22:03:37 -0600
+
 spacemonkey-base-image (3.8.6.spacemonkey-5) UNRELEASED; urgency=low
 
   * Enabling lots of other routing/shaping/classifying options, to get us

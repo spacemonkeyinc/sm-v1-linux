@@ -90,6 +90,7 @@ kernel-source-stamp: kernel-verified-stamp
 	tar xJf "$(KERNEL_TARBALL)"
 	@echo "Patching kernel"
 	patch -d $(KERNEL_DIR) -p1 < config/archlinuxarm.patch
+	patch -d $(KERNEL_DIR) -p1 < config/spacemonkey.patch
 	patch -d $(KERNEL_DIR) -p1 < config/mv_cesa_dma.patch
 	cp config/mach-types $(KERNEL_DIR)/arch/arm/tools/
 	mkdir $(KERNEL_DIR)/debian

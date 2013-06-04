@@ -1,3 +1,9 @@
+spacemonkey-base-image (3.8.6.spacemonkey-7) UNRELEASED; urgency=low
+
+  * spacemonkey: Add GPIO 37 as GPIO key
+
+ -- Tom Stokes <tom@spacemonkey.com>  Mon, 03 Jun 2013 23:49:47 -0600
+
 spacemonkey-base-image (3.8.6.spacemonkey-6) UNRELEASED; urgency=low
 
   * Add spacemonkey hardware support 

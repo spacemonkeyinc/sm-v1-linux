@@ -1,6 +1,6 @@
 diff -rupN linux-3.8.6/arch/arm/mach-kirkwood/Kconfig linux-3.8.6-patched/arch/arm/mach-kirkwood/Kconfig
---- linux-3.8.6/arch/arm/mach-kirkwood/Kconfig	2013-06-03 23:03:50.811719834 -0600
-+++ linux-3.8.6-patched/arch/arm/mach-kirkwood/Kconfig	2013-06-03 23:05:06.263719627 -0600
+--- linux-3.8.6/arch/arm/mach-kirkwood/Kconfig	2013-06-04 00:19:59.871719809 -0600
++++ linux-3.8.6-patched/arch/arm/mach-kirkwood/Kconfig	2013-06-04 00:23:22.759720084 -0600
 @@ -314,6 +314,12 @@ config MACH_NSA320
       Say 'Y' here if you want your kernel to support the
       ZyXel NSA320.
@@ -15,8 +15,8 @@ diff -rupN linux-3.8.6/arch/arm/mach-kirkwood/Kconfig linux-3.8.6-patched/arch/a
  
  endif
 diff -rupN linux-3.8.6/arch/arm/mach-kirkwood/Makefile linux-3.8.6-patched/arch/arm/mach-kirkwood/Makefile
---- linux-3.8.6/arch/arm/mach-kirkwood/Makefile	2013-06-03 23:03:50.811719834 -0600
-+++ linux-3.8.6-patched/arch/arm/mach-kirkwood/Makefile	2013-06-03 23:05:06.263719627 -0600
+--- linux-3.8.6/arch/arm/mach-kirkwood/Makefile	2013-06-04 00:19:59.871719809 -0600
++++ linux-3.8.6-patched/arch/arm/mach-kirkwood/Makefile	2013-06-04 00:23:22.759720084 -0600
 @@ -26,6 +26,7 @@ obj-$(CONFIG_MACH_D2NET_V2)		+= d2net_v2
  obj-$(CONFIG_MACH_NET2BIG_V2)		+= netxbig_v2-setup.o lacie_v2-common.o
  obj-$(CONFIG_MACH_NET5BIG_V2)		+= netxbig_v2-setup.o lacie_v2-common.o
@@ -27,8 +27,8 @@ diff -rupN linux-3.8.6/arch/arm/mach-kirkwood/Makefile linux-3.8.6-patched/arch/
  
 diff -rupN linux-3.8.6/arch/arm/mach-kirkwood/spacemonkey-setup.c linux-3.8.6-patched/arch/arm/mach-kirkwood/spacemonkey-setup.c
 --- linux-3.8.6/arch/arm/mach-kirkwood/spacemonkey-setup.c	1969-12-31 17:00:00.000000000 -0700
-+++ linux-3.8.6-patched/arch/arm/mach-kirkwood/spacemonkey-setup.c	2013-06-03 23:05:24.107719806 -0600
-@@ -0,0 +1,128 @@
++++ linux-3.8.6-patched/arch/arm/mach-kirkwood/spacemonkey-setup.c	2013-06-04 00:23:36.271719809 -0600
+@@ -0,0 +1,163 @@
 +/*
 + * arch/arm/mach-kirkwood/spacemonkey-setup.c
 + *
@@ -45,7 +45,9 @@ diff -rupN linux-3.8.6/arch/arm/mach-kirkwood/spacemonkey-setup.c linux-3.8.6-pa
 +#include <linux/ata_platform.h>
 +#include <linux/mtd/partitions.h>
 +#include <linux/mv643xx_eth.h>
++#include <linux/input.h>
 +#include <linux/gpio.h>
++#include <linux/gpio_keys.h>
 +#include <linux/leds.h>
 +#include <asm/mach-types.h>
 +#include <asm/mach/arch.h>
@@ -103,7 +105,7 @@ diff -rupN linux-3.8.6/arch/arm/mach-kirkwood/spacemonkey-setup.c linux-3.8.6-pa
 +		.default_trigger	= "default-on",
 +		.gpio			= 21,
 +		.active_low		= 1,
-+	}
++	},
 +};
 +
 +static struct gpio_led_platform_data spacemonkey_led_data = {
@@ -116,14 +118,46 @@ diff -rupN linux-3.8.6/arch/arm/mach-kirkwood/spacemonkey-setup.c linux-3.8.6-pa
 +	.id	= -1,
 +	.dev	= {
 +		.platform_data	= &spacemonkey_led_data,
-+	}
++	},
++};
++
++#define SPACEMONKEY_SW_BUTTON		0x00
++#define SPACEMONKEY_GPIO_KEY_BUTTON	37
++
++static struct gpio_keys_button spacemonkey_buttons[] = {
++	{
++		.type		= EV_SW,
++		.code		= SPACEMONKEY_SW_BUTTON,
++		.gpio		= SPACEMONKEY_GPIO_KEY_BUTTON,
++		.desc		= "Function button",
++		.active_low	= 1,
++		.debounce_interval = 200,
++	},
++};
++
++static struct gpio_keys_platform_data spacemonkey_button_data = {
++	.buttons	= spacemonkey_buttons,
++	.nbuttons	= ARRAY_SIZE(spacemonkey_buttons),
++};
++
++static struct platform_device spacemonkey_button_device = {
++	.name		= "gpio-keys",
++	.id		= -1,
++	.num_resources	= 0,
++	.dev		= {
++		.platform_data	= &spacemonkey_button_data,
++	},
 +};
 +
 +static unsigned int spacemonkey_mpp_config[] __initdata = {
++	MPP37_GPIO,	/* Push Button */
 +	MPP28_GPIO,	/* LED Green */
++	MPP27_GPIO,	/* HW Revision ID bit 2 */
++	MPP26_GPIO,	/* HW Revision ID bit 1 */
++	MPP24_GPIO,	/* HW Revision ID bit 0 */
 +	MPP23_GPIO,	/* LED Orange */
 +	MPP21_GPIO,	/* LED Blue */
-+	0
++	0,
 +};
 +
 +static void __init spacemonkey_init(void)
@@ -144,6 +178,7 @@ diff -rupN linux-3.8.6/arch/arm/mach-kirkwood/spacemonkey-setup.c linux-3.8.6-pa
 +	kirkwood_sata_init(&spacemonkey_sata_data);
 +
 +	platform_device_register(&spacemonkey_leds);
++	platform_device_register(&spacemonkey_button_device);
 +}
 +
 +MACHINE_START(SPACEMONKEY, "Space Monkey")
@@ -159,7 +194,7 @@ diff -rupN linux-3.8.6/arch/arm/mach-kirkwood/spacemonkey-setup.c linux-3.8.6-pa
 +
 diff -rupN linux-3.8.6/arch/arm/tools/mach-types linux-3.8.6-patched/arch/arm/tools/mach-types
 --- linux-3.8.6/arch/arm/tools/mach-types	2013-04-05 10:49:06.000000000 -0600
-+++ linux-3.8.6-patched/arch/arm/tools/mach-types	2013-06-03 23:05:06.263719627 -0600
++++ linux-3.8.6-patched/arch/arm/tools/mach-types	2013-06-04 00:23:22.759720084 -0600
 @@ -1204,3 +1204,4 @@ baileys			MACH_BAILEYS		BAILEYS			4169
  familybox		MACH_FAMILYBOX		FAMILYBOX		4170
  ensemble_mx35		MACH_ENSEMBLE_MX35	ENSEMBLE_MX35		4171

@@ -92,6 +92,7 @@ kernel-source-stamp: kernel-verified-stamp
 	patch -d $(KERNEL_DIR) -p1 < config/archlinuxarm.patch
 	patch -d $(KERNEL_DIR) -p1 < config/spacemonkey.patch
 	patch -d $(KERNEL_DIR) -p1 < config/mv_cesa_dma.patch
+	patch -d $(KERNEL_DIR) -p1 < config/fan5646.patch
 	cp config/mach-types $(KERNEL_DIR)/arch/arm/tools/
 	mkdir $(KERNEL_DIR)/debian
 	@echo "Installing kernel configuration file"

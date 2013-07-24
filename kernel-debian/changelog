@@ -1,3 +1,9 @@
+spacemonkey-base-image (3.8.6.spacemonkey-8) unstable; urgency=low
+
+  * Add FAN5646 LED driver support
+
+ -- Tom Stokes <tom@spacemonkey.com>  Tue, 23 Jul 2013 18:46:25 -0600
+
 spacemonkey-base-image (3.8.6.spacemonkey-7) UNRELEASED; urgency=low
 
   * spacemonkey: Add GPIO 37 as GPIO key

@@ -109,6 +109,11 @@ $(DEB_CHANGESFILE) $(DEB_KERNELPKG): kernel-source-stamp $(DEB_PACKAGING_FILES)
 PHONY += kernel
 kernel: $(DEB_CHANGESFILE)
 
+# convenient to do here instead of manually since this Makefile has
+# $CROSS_COMPILE and $ARCH exported
+oldconfig: kernel-source-stamp
+	$(MAKE) -C $(KERNEL_DIR) oldconfig
+
 BUILD_TAG_NAME=debian/spacemonkey-base-image/$(DEB_VERSION)
 
 PHONY += upload_packages

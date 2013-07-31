@@ -1,3 +1,11 @@
+spacemonkey-base-image (3.8.6.spacemonkey-9) unstable; urgency=low
+
+  * Enable CONNTRACK, iptables "mangle" and "raw" tables, IFB, and CODEL
+    scheduling modules
+  * Enable FAN5646 LED driver in .config
+
+ -- paul cannon <paul@spacemonkey.com>  Wed, 31 Jul 2013 10:41:11 -0600
+
 spacemonkey-base-image (3.8.6.spacemonkey-8) unstable; urgency=low
 
   * Add FAN5646 LED driver support

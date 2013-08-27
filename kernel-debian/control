@@ -1,6 +1,6 @@
 Source: spacemonkey-base-image
 Section: contrib/kernel
-Priority: required
+Priority: standard
 Maintainer: Tom Stokes <tom@spacemonkey.com>
 Build-Depends: debhelper (>> 8), cpio:native, lzma:native, patchutils,
   u-boot-tools:native, uboot-envtools, mtd-utils:native,
@@ -22,6 +22,7 @@ Description: Linux kernel for Space Monkey devices
 
 Package: spacemonkey-kernel-headers-#PKGVER#
 Architecture: armel
+Priority: extra
 Provides: linux-headers, spacemonkey-kernel-headers,
   spacemonkey-kernel-headers-#SHORTVER#
 Description: Linux header files for Space Monkey devices
@@ -32,6 +33,7 @@ Description: Linux header files for Space Monkey devices
 
 Package: spacemonkey-kernel-#PKGVER#-dbg
 Architecture: armel
+Priority: extra
 Provides: linux-image-dbg, spacemonkey-kernel-dbg
 Recommends: spacemonkey-kernel-#PKGVER# (= ${binary:Version})
 Description: Linux kernel debug symbols for Space Monkey devices

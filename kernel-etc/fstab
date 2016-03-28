@@ -1,0 +1,7 @@
+/dev/sda1   /                         ext3    noatime          0  1
+/dev/sda2   /var/log                  ext3    noatime          0  2
+/dev/sda3   none                      swap    sw               0  0
+/dev/sda4   /var/spacemonkey          ext3    noexec,noatime,grpjquota=aquota.group,jqfmt=vfsv1   0  2
+/dev/sda5   /var/spacemonkey/remote   ext3    noexec,noatime,grpjquota=aquota.group,jqfmt=vfsv1   0  2
+mtd:secure  /var/spacemonkey-secure   jffs2   noexec,noatime   0  0
+tmpfs       /tmp                      tmpfs   defaults         0  0

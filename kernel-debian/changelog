@@ -1,3 +1,10 @@
+spacemonkey-base-image (3.8.6.spacemonkey-11) unstable; urgency=low
+
+  * Enable quota in kernel
+  * Install fstab with quota mount options
+
+ -- Jacob Willoughby <jacob@spacemonkey.com>  Mon, 28 Mar 2016 15:25:00 -0600
+
 spacemonkey-base-image (3.8.6.spacemonkey-10) unstable; urgency=low
 
   * Enable oneshot LED trigger

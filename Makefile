@@ -21,7 +21,8 @@ SHA256=shasum -a 256
 
 DEB_ARCH := armel
 DEB_PACKAGING_FILES := $(patsubst kernel-debian/%,$(KERNEL_DIR)/debian/%, \
-                         $(wildcard kernel-debian/*))
+                         $(wildcard kernel-debian/*)) \
+                         $(KERNEL_DIR)/debian/etc/fstab
 DEB_VERSION := $(shell dpkg-parsechangelog -n1 -lkernel-debian/changelog \
                  | awk '$$1=="Version:" {print $$2}')
 DEB_CHANGESFILE := spacemonkey-base-image_$(DEB_VERSION)_armel.changes
@@ -69,6 +70,10 @@ $(KERNEL_DIR)/debian/%: kernel-debian/% kernel-source-stamp
 	sed -e 's/#PKGVER#/$(KERNEL_SM_PKG)/g' \
 	    -e 's/#SHORTVER#/$(KERNEL_SHORTVER)/g' "$<" > "$@"
 
+$(KERNEL_DIR)/debian/etc/%: kernel-etc/% kernel-source-stamp
+	mkdir -p $(KERNEL_DIR)/debian/etc
+	cp "$<" $(KERNEL_DIR)/debian/etc/
+
 $(KERNEL_TARBALL):
 	@echo "Downloading linux kernel ..."
 	wget "$(KERNEL_URL)" -N
@@ -113,6 +118,9 @@ kernel: $(DEB_CHANGESFILE)
 # $CROSS_COMPILE and $ARCH exported
 oldconfig: kernel-source-stamp
 	$(MAKE) -C $(KERNEL_DIR) oldconfig
+
+menuconfig: kernel-source-stamp
+	$(MAKE) -C $(KERNEL_DIR) menuconfig
 
 BUILD_TAG_NAME=debian/spacemonkey-base-image/$(DEB_VERSION)
 

@@ -20,6 +20,8 @@ DEBVERSION="__DEB_VERSION__"
 
 case "$1" in
     configure)
+        mkdir -p /run/spacemonkey
+        chown 999:999 /run/spacemonkey
         touch /run/spacemonkey/force_reboot # place stamp file for reboot
     ;;
 
